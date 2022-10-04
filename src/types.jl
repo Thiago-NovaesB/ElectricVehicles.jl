@@ -21,6 +21,8 @@
     
     swap_min::Float64
     energy_arrived::Vector{Vector{Float64}}
+    max_arrived::Vector{Vector{Float64}}
+    min_arrived::Vector{Vector{Float64}}
     vehicles_arrived::Vector{Int}
     store_init::Vector{Float64}
     rho::Float64

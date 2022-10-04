@@ -8,13 +8,23 @@ function add_energy_storage!(prb::Problem)
     @variable(model, store_min <= energy_storage[1:B, 1:T] <= store_max)
 end
 
-function add_energy_sold_vehicle!(prb::Problem)
+function add_energy_sold_battery!(prb::Problem)
     model = prb.model
     store_max = prb.data.store_max
     B = prb.data.B
     T = prb.data.T
 
     @variable(model, 0.0 <= energy_sold[1:B, 1:T] <= store_max)
+end
+
+function add_energy_sold_vehicle!(prb::Problem)
+    model = prb.model
+    store_max = prb.data.store_max
+    vehicles_arrived = prb.data.vehicles_arrived
+    B = prb.data.B
+    T = prb.data.T
+
+    @variable(model, 0.0 <= energy_sold_vehicle[t in 1:T, 1:vehicles_arrived[t], 1:B] <= store_max)
 end
 
 function add_energy_bought_grid!(prb::Problem)

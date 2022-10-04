@@ -9,6 +9,7 @@ end
 function add_variables!(prb::Problem)
     
     add_energy_storage!(prb)
+    add_energy_sold_battery!(prb)
     add_energy_sold_vehicle!(prb)
     add_energy_bought_grid!(prb)
     add_charging_battery!(prb)
@@ -25,8 +26,9 @@ end
 function add_constraints!(prb::Problem)
     
     add_battery_balance!(prb)
-    add_linear_Cont_Bin!(prb)
-    add_linear_Bin_Bin!(prb)
+    add_linear_Cont_Bin1!(prb)
+    add_linear_Cont_Bin2!(prb)
+    add_bound_energy_sold!(prb)
     add_energy_sold_balance!(prb)
     add_final_storage!(prb)
     add_assignment_con_1!(prb)
