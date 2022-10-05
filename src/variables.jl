@@ -53,12 +53,12 @@ end
 
 function add_energy_charger!(prb::Problem)
     model = prb.model
-    store_max = prb.data.store_max
-    store_min = prb.data.store_min
+    ramp_max = prb.data.ramp_max
+
     B = prb.data.B
     T = prb.data.T
 
-    @variable(model, store_min <= energy_charger[1:B, 1:T] <= store_max)
+    @variable(model, 0 <= energy_charger[1:B, 1:T] <= ramp_max)
 end
 
 function add_pv_generation_bat!(prb::Problem)
