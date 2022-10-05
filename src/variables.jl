@@ -83,7 +83,7 @@ function add_trick_C_B!(prb::Problem)
     T = prb.data.T
     B = prb.data.B
 
-    @variable(model, Y_C_B[1:T-1, 1:B])
+    @variable(model, Y_C_B[1:B, 1:T-1])
 end
 
 function add_trick_B_B!(prb::Problem)

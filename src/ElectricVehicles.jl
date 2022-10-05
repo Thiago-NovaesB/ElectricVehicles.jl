@@ -1,13 +1,21 @@
 module ElectricVehicles
 
-using JuMP
-using HiGHS
+    using JuMP
+    using HiGHS
+    using JSON
+    using Dates
+    using DataFrames
+    using Query
+    using Plots
 
-include("utils.jl")
-include("types.jl")
-include("variables.jl")
-include("constraints.jl")
-include("objective.jl")
-include("model.jl")
+    include("get_data.jl")
+    include("utils.jl")
+    include("types.jl")
+    include("variables.jl")
+    include("constraints.jl")
+    include("objective.jl")
+    include("model.jl")
+
+    export get_cars_electric_demand
 
 end # module ElectricVehicles

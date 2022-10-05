@@ -25,10 +25,10 @@ function add_linear_Cont_Bin!(prb::Problem)
     energy_storage = model[:energy_storage]
     Y_C_B = model[:Y_C_B]
     
-    @constraint(model, aux_Y_C_B_1[t = 1:T-1, b = 1:B], Y_C_B[t, b] <= store_max*S[b,t+1])
-    @constraint(model, aux_Y_C_B_2[t = 1:T-1, b = 1:B], Y_C_B[t, b] <= energy_storage[b, t])
-    @constraint(model, aux_Y_C_B_3[t = 1:T-1, b = 1:B], Y_C_B[t, b] >= energy_storage[b, t] - store_max*(1-S[b,t+1])) 
-    @constraint(model, aux_Y_C_B_4[t = 1:T-1, b = 1:B], Y_C_B[t, b] >= store_min*S[b,t+1])
+    @constraint(model, aux_Y_C_B_1[t = 1:T-1, b = 1:B], Y_C_B[b, t] <= store_max*S[b,t+1])
+    @constraint(model, aux_Y_C_B_2[t = 1:T-1, b = 1:B], Y_C_B[b, t] <= energy_storage[b, t])
+    @constraint(model, aux_Y_C_B_3[t = 1:T-1, b = 1:B], Y_C_B[b, t] >= energy_storage[b, t] - store_max*(1-S[b,t+1])) 
+    @constraint(model, aux_Y_C_B_4[t = 1:T-1, b = 1:B], Y_C_B[b, t] >= store_min*S[b,t+1])
     
 end
 
