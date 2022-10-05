@@ -1,5 +1,6 @@
 using ElectricVehicles
 using HiGHS
+using Gurobi
 using JuMP
 
 prb = ElectricVehicles.Problem()
@@ -12,9 +13,9 @@ lengths_cars = Int64.(df_lengths_cars.Count)
 solar_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.39408, 17.11094, 21.53498, 22.33154, 20.40962, 14.99074, 7.6846, 0.92978, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 Max_Baterry_Cap = 60
 data.B = 10
-data.T = length(lengths_cars)
-data.N_s = 10
-data.N_k = 10
+data.T = 24
+data.N_s = 5
+data.N_k = 5
 data.store_max = Max_Baterry_Cap
 data.store_min = 0.0
 data.ramp_max = 0.3*Max_Baterry_Cap
@@ -28,19 +29,18 @@ data.con_efficiency = 0.95
 data.charger_efficiency = 0.99
 data.pv_generation = solar_data
 data.D = 1.0
-data.swap_min = 0.7*Max_Baterry_Cap
 data.energy_arrived = df_lengths_cars.EQ
 data.vehicles_arrived = lengths_cars
 data.store_init = ones(data.B)*Max_Baterry_Cap
 data.swap_min = 0.7
-data.energy_arrived = [[0.5, 0.5], [0.5], [0.5]]
-data.max_arrived = [[1, 1], [1], [1]]
-data.min_arrived = [[0, 0], [1], [1]]
-data.vehicles_arrived = [2,1,1]
-data.store_init = [1.0, 1.0]
+data.energy_arrived = rand.(lengths_cars).*Max_Baterry_Cap/2
+data.max_arrived = ones.(lengths_cars)*Max_Baterry_Cap
+data.min_arrived = data.energy_arrived.+df_lengths_cars.EQ
+data.min_arrived = [Float64[min(y,Max_Baterry_Cap) for y in x] for x in data.min_arrived]
 data.rho = 0.0
 
-data.solver = HiGHS.Optimizer
+# data.solver = HiGHS.Optimizer
+data.solver = Gurobi.Optimizer
 
 ElectricVehicles.create_model!(prb)
 ElectricVehicles.solve_model!(prb)
