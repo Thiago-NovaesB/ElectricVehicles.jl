@@ -81,11 +81,7 @@ function add_assignment!(prb::Problem)
     vehicles_arrived = prb.data.vehicles_arrived
     T = prb.data.T
     B = prb.data.B
-    if true #TODO
-        @variable(model, A[t in 1:T, 1:vehicles_arrived[t], 1:B], Bin)
-    else
-        @variable(model, 0 <= A[t in 1:T, 1:vehicles_arrived[t], 1:B] <= 1)
-    end
+    @variable(model, A[t in 1:T, 1:vehicles_arrived[t], 1:B], Bin)
 end
 
 function add_trick_C_B!(prb::Problem)
