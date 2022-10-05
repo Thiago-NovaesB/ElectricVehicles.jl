@@ -11,10 +11,11 @@ end
 function add_energy_sold_battery!(prb::Problem)
     model = prb.model
     store_max = prb.data.store_max
+    store_min = prb.data.store_min
     B = prb.data.B
     T = prb.data.T
 
-    @variable(model, 0.0 <= energy_sold[1:B, 1:T] <= store_max)
+    @variable(model, 0.0 <= energy_sold[1:B, 1:T] <= store_max - store_min)
 end
 
 function add_energy_sold_vehicle!(prb::Problem)
