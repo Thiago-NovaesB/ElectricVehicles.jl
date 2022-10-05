@@ -25,10 +25,10 @@ function add_linear_Cont_Bin1!(prb::Problem)
     energy_storage = model[:energy_storage]
     Y_C_B = model[:Y_C_B]
     
-    @constraint(model, aux_Y_C_B_1[t = 1:T-1, b = 1:B], Y_C_B[t, b] <= store_max*S[b,t+1])
-    @constraint(model, aux_Y_C_B_2[t = 1:T-1, b = 1:B], Y_C_B[t, b] <= energy_storage[b, t])
-    @constraint(model, aux_Y_C_B_3[t = 1:T-1, b = 1:B], Y_C_B[t, b] >= energy_storage[b, t] - store_max*(1-S[b,t+1])) 
-    @constraint(model, aux_Y_C_B_4[t = 1:T-1, b = 1:B], Y_C_B[t, b] >= store_min*S[b,t+1])
+    @constraint(model, aux_Y_C_B_1[t = 1:T-1, b = 1:B], Y_C_B[b, t] <= store_max*S[b,t+1])
+    @constraint(model, aux_Y_C_B_2[t = 1:T-1, b = 1:B], Y_C_B[b, t] <= energy_storage[b, t])
+    @constraint(model, aux_Y_C_B_3[t = 1:T-1, b = 1:B], Y_C_B[b, t] >= energy_storage[b, t] - store_max*(1-S[b,t+1])) 
+    @constraint(model, aux_Y_C_B_4[t = 1:T-1, b = 1:B], Y_C_B[b, t] >= store_min*S[b,t+1])
     
 end
 
@@ -78,12 +78,11 @@ function add_energy_sold_balance!(prb::Problem)
 
     energy_sold = model[:energy_sold]
     S = model[:S]
-    Y_B_B = model[:Y_B_B]
     A = model[:A]
     Y_C_B = model[:Y_C_B]
 
     @constraint(model, energy_sold_balance_0[b = 1:B], energy_sold[b, 1] == (store_init[b]*S[b,1] - sum(A[1,v,b]*energy_arrived[1][v] for v in 1:vehicles_arrived[1])))
-    @constraint(model, energy_sold_balance[b = 1:B, t = 2:T], energy_sold[b, t] == (Y_C_B[b, t-1] - sum(A[t,v,b]*energy_arrived[t][v] for v in 1:vehicles_arrived[t]))) #TODO
+    @constraint(model, energy_sold_balance[b = 1:B, t = 2:T], energy_sold[b, t] == (Y_C_B[b, t-1] - sum(A[t,v,b]*energy_arrived[t][v] for v in 1:vehicles_arrived[t])))
 end
 
 function add_final_storage!(prb::Problem)

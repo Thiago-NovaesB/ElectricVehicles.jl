@@ -93,14 +93,5 @@ function add_trick_C_B!(prb::Problem)
     T = prb.data.T
     B = prb.data.B
 
-    @variable(model, Y_C_B[1:T-1, 1:B])
-end
-
-function add_trick_B_B!(prb::Problem)
-    model = prb.model
-    vehicles_arrived = prb.data.vehicles_arrived
-    T = prb.data.T
-    B = prb.data.B
-
-    @variable(model,Y_B_B[t in 1:T, 1:vehicles_arrived[t], 1:B], Bin)
+    @variable(model, Y_C_B[1:B, 1:T-1])
 end

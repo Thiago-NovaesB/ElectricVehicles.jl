@@ -34,11 +34,3 @@ data.solver = HiGHS.Optimizer
 
 ElectricVehicles.create_model!(prb)
 ElectricVehicles.solve_model!(prb)
-
-value.(prb.model[:Y_C_B])
-value.(prb.model[:energy_storage])
-value.(prb.model[:energy_sold])
-
-
-value.(prb.model[:Y_B_B])
-
