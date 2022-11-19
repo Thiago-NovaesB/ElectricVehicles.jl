@@ -11,11 +11,10 @@ end
 function add_energy_sold_battery!(prb::Problem)
     model = prb.model
     store_max = prb.data.store_max
-    store_min = prb.data.store_min
     B = prb.data.B
     T = prb.data.T
 
-    @variable(model, 0.0 <= energy_sold[1:B, 1:T] <= store_max - store_min)
+    @variable(model, 0.0 <= energy_sold[1:B, 1:T] <= store_max)
 end
 
 function add_energy_sold_vehicle!(prb::Problem)
@@ -53,12 +52,12 @@ end
 
 function add_energy_charger!(prb::Problem)
     model = prb.model
-    ramp_max = prb.data.ramp_max
-
+    store_max = prb.data.store_max
+    store_min = prb.data.store_min
     B = prb.data.B
     T = prb.data.T
 
-    @variable(model, 0 <= energy_charger[1:B, 1:T] <= ramp_max)
+    @variable(model, store_min <= energy_charger[1:B, 1:T] <= store_max)
 end
 
 function add_pv_generation_bat!(prb::Problem)
@@ -82,7 +81,11 @@ function add_assignment!(prb::Problem)
     vehicles_arrived = prb.data.vehicles_arrived
     T = prb.data.T
     B = prb.data.B
-    @variable(model, A[t in 1:T, 1:vehicles_arrived[t], 1:B], Bin)
+    if true #TODO
+        @variable(model, A[t in 1:T, 1:vehicles_arrived[t], 1:B], Bin)
+    else
+        @variable(model, 0 <= A[t in 1:T, 1:vehicles_arrived[t], 1:B] <= 1)
+    end
 end
 
 function add_trick_C_B!(prb::Problem)
@@ -90,5 +93,14 @@ function add_trick_C_B!(prb::Problem)
     T = prb.data.T
     B = prb.data.B
 
-    @variable(model, Y_C_B[1:B, 1:T-1])
+    @variable(model, Y_C_B[1:T-1, 1:B])
+end
+
+function add_trick_B_B!(prb::Problem)
+    model = prb.model
+    vehicles_arrived = prb.data.vehicles_arrived
+    T = prb.data.T
+    B = prb.data.B
+
+    @variable(model,Y_B_B[t in 1:T, 1:vehicles_arrived[t], 1:B], Bin)
 end

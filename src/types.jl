@@ -19,6 +19,7 @@
     pv_generation::Vector{Float64}
     D::Float64
     
+    swap_min::Float64
     energy_arrived::Vector{Vector{Float64}}
     max_arrived::Vector{Vector{Float64}}
     min_arrived::Vector{Vector{Float64}}

@@ -19,6 +19,7 @@ function add_variables!(prb::Problem)
     add_pv_generation_grid!(prb)
     add_assignment!(prb)
     add_trick_C_B!(prb)
+    add_trick_B_B!(prb)
     nothing
 end
 
@@ -33,6 +34,7 @@ function add_constraints!(prb::Problem)
     add_assignment_con_1!(prb)
     add_assignment_con_2!(prb)
     add_choose_action!(prb)
+    add_min_swap!(prb)
     add_swap_battery!(prb)
     add_max_charges!(prb)
     add_max_charger!(prb)
