@@ -22,7 +22,6 @@ data.con_efficiency = 0.95
 data.charger_efficiency = 0.99
 data.pv_generation = ones(3)
 data.D = 1.0
-data.swap_min = 0.7
 data.energy_arrived = [[0.5, 0.5], [0.5], [0.5]]
 data.max_arrived = [[1, 1], [1], [1]]
 data.min_arrived = [[0, 0], [1], [1]]
@@ -34,11 +33,3 @@ data.solver = HiGHS.Optimizer
 
 ElectricVehicles.create_model!(prb)
 ElectricVehicles.solve_model!(prb)
-
-value.(prb.model[:Y_C_B])
-value.(prb.model[:energy_storage])
-value.(prb.model[:energy_sold])
-
-
-value.(prb.model[:Y_B_B])
-

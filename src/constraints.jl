@@ -25,10 +25,10 @@ function add_linear_Cont_Bin1!(prb::Problem)
     energy_storage = model[:energy_storage]
     Y_C_B = model[:Y_C_B]
     
-    @constraint(model, aux_Y_C_B_1[t = 1:T-1, b = 1:B], Y_C_B[t, b] <= store_max*S[b,t+1])
-    @constraint(model, aux_Y_C_B_2[t = 1:T-1, b = 1:B], Y_C_B[t, b] <= energy_storage[b, t])
-    @constraint(model, aux_Y_C_B_3[t = 1:T-1, b = 1:B], Y_C_B[t, b] >= energy_storage[b, t] - store_max*(1-S[b,t+1])) 
-    @constraint(model, aux_Y_C_B_4[t = 1:T-1, b = 1:B], Y_C_B[t, b] >= store_min*S[b,t+1])
+    @constraint(model, aux_Y_C_B_1[t = 1:T-1, b = 1:B], Y_C_B[b, t] <= store_max*S[b,t+1])
+    @constraint(model, aux_Y_C_B_2[t = 1:T-1, b = 1:B], Y_C_B[b, t] <= energy_storage[b, t])
+    @constraint(model, aux_Y_C_B_3[t = 1:T-1, b = 1:B], Y_C_B[b, t] >= energy_storage[b, t] - store_max*(1-S[b,t+1])) 
+    @constraint(model, aux_Y_C_B_4[t = 1:T-1, b = 1:B], Y_C_B[b, t] >= store_min*S[b,t+1])
     
 end
 
@@ -37,18 +37,15 @@ function add_linear_Cont_Bin2!(prb::Problem)
     B = prb.data.B
     T = prb.data.T
     store_max = prb.data.store_max
-    store_min = prb.data.store_min
     vehicles_arrived = prb.data.vehicles_arrived
 
     A = model[:A]
-    energy_storage = model[:energy_storage]
     energy_sold_vehicle = model[:energy_sold_vehicle]
     energy_sold = model[:energy_sold]
     
     @constraint(model, aux_1[t = 1:T, v = 1:vehicles_arrived[t], b = 1:B], energy_sold_vehicle[t, v, b] <= store_max*A[t,v,b])
     @constraint(model, aux_2[t = 1:T, v = 1:vehicles_arrived[t], b = 1:B], energy_sold_vehicle[t, v, b] <= energy_sold[b, t])
     @constraint(model, aux_3[t = 1:T, v = 1:vehicles_arrived[t], b = 1:B], energy_sold_vehicle[t, v, b] >= energy_sold[b, t] - store_max*(1-A[t,v,b])) 
-    # @constraint(model, aux_4[t = 1:T-1, 1:vehicles_arrived[t], b = 1:B], energy_sold_vehicle[t, v] >= 0.0*A[t,v,b])
     
 end
 
@@ -61,7 +58,6 @@ function add_bound_energy_sold!(prb::Problem)
     vehicles_arrived = prb.data.vehicles_arrived
 
     A = model[:A]
-    energy_storage = model[:energy_storage]
     energy_sold_vehicle = model[:energy_sold_vehicle]
     
     @constraint(model, lala1[t = 1:T, v = 1:vehicles_arrived[t], b = 1:B], energy_sold_vehicle[t,v,b] <= max_arrived[t][v]*A[t,v,b])
@@ -78,12 +74,11 @@ function add_energy_sold_balance!(prb::Problem)
 
     energy_sold = model[:energy_sold]
     S = model[:S]
-    Y_B_B = model[:Y_B_B]
     A = model[:A]
     Y_C_B = model[:Y_C_B]
 
     @constraint(model, energy_sold_balance_0[b = 1:B], energy_sold[b, 1] == (store_init[b]*S[b,1] - sum(A[1,v,b]*energy_arrived[1][v] for v in 1:vehicles_arrived[1])))
-    @constraint(model, energy_sold_balance[b = 1:B, t = 2:T], energy_sold[b, t] == (Y_C_B[b, t-1] - sum(A[t,v,b]*energy_arrived[t][v] for v in 1:vehicles_arrived[t]))) #TODO
+    @constraint(model, energy_sold_balance[b = 1:B, t = 2:T], energy_sold[b, t] == (Y_C_B[b, t-1] - sum(A[t,v,b]*energy_arrived[t][v] for v in 1:vehicles_arrived[t])))
 end
 
 function add_final_storage!(prb::Problem)
@@ -128,20 +123,6 @@ function add_choose_action!(prb::Problem)
     K = model[:K]
 
     @constraint(model, choose_action[b = 1:B, t = 1:T], K[b, t] + S[b, t] <= 1) 
-end
-
-function add_min_swap!(prb::Problem)
-    model = prb.model
-    B = prb.data.B
-    T = prb.data.T
-    store_init = prb.data.store_init
-    swap_min = prb.data.swap_min
-
-    S = model[:S]
-    energy_storage = model[:energy_storage]
-
-    @constraint(model, min_swap_0[b = 1:B], store_init[b] >= swap_min*S[b,1]) 
-    @constraint(model, min_swap[b = 1:B, t = 1:T-1], energy_storage[b, t] >= swap_min*S[b,t+1]) 
 end
 
 function add_swap_battery!(prb::Problem)
