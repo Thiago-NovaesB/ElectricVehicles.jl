@@ -1,11 +1,11 @@
-# function add_dual_fisher!(prb::Problem)
-#     model = prb.model
-#     data = prb.data
-#     B = prb.data.B
-#     energy_storage_inital = model[:energy_storage_inital]
+function add_dual_fisher!(prb::Problem)
+    model = prb.model
+    data = prb.data
+    B = prb.data.B
+    energy_storage = model[:energy_storage]
 
-#     @constraint(model, dual_fisher[b in 1:B], energy_storage_inital[b] == data.store_init[b])
-# end
+    @constraint(model, dual_fisher[b in 1:B], energy_storage[b,1] == data.store_init[b])
+end
 
 function add_battery_balance!(prb::Problem)
     model = prb.model
@@ -13,14 +13,12 @@ function add_battery_balance!(prb::Problem)
     T = prb.data.T
     D = prb.data.D
     charger_efficiency = prb.data.charger_efficiency
-    store_init = prb.data.store_init
 
     energy_storage = model[:energy_storage]
     energy_charger = model[:energy_charger]
     energy_sold = model[:energy_sold]
 
-    @constraint(model, battery_balance_0[b = 1:B], energy_storage[b, 1] == store_init[b] + energy_charger[b, 1]*D*charger_efficiency - energy_sold[b, 1]) 
-    @constraint(model, battery_balance[b = 1:B, t = 2:T], energy_storage[b, t] == energy_storage[b, t-1] + energy_charger[b, t]*D*charger_efficiency - energy_sold[b, t]) 
+    @constraint(model, battery_balance[b = 1:B, t = 1:T], energy_storage[b, t+1] == energy_storage[b, t] + energy_charger[b, t]*D*charger_efficiency - energy_sold[b, t]) 
 end
 
 function add_linear_Cont_Bin1!(prb::Problem)
@@ -34,10 +32,10 @@ function add_linear_Cont_Bin1!(prb::Problem)
     energy_storage = model[:energy_storage]
     Y_C_B = model[:Y_C_B]
     
-    @constraint(model, aux_Y_C_B_1[t = 1:T-1, b = 1:B], Y_C_B[b, t] <= store_max*S[b,t+1])
-    @constraint(model, aux_Y_C_B_2[t = 1:T-1, b = 1:B], Y_C_B[b, t] <= energy_storage[b, t])
-    @constraint(model, aux_Y_C_B_3[t = 1:T-1, b = 1:B], Y_C_B[b, t] >= energy_storage[b, t] - store_max*(1-S[b,t+1])) 
-    @constraint(model, aux_Y_C_B_4[t = 1:T-1, b = 1:B], Y_C_B[b, t] >= store_min*S[b,t+1])
+    @constraint(model, aux_Y_C_B_1[t = 1:T, b = 1:B], Y_C_B[b, t] <= store_max*S[b,t])
+    @constraint(model, aux_Y_C_B_2[t = 1:T, b = 1:B], Y_C_B[b, t] <= energy_storage[b, t])
+    @constraint(model, aux_Y_C_B_3[t = 1:T, b = 1:B], Y_C_B[b, t] >= energy_storage[b, t] - store_max*(1-S[b,t])) 
+    @constraint(model, aux_Y_C_B_4[t = 1:T, b = 1:B], Y_C_B[b, t] >= store_min*S[b,t])
     
 end
 
@@ -87,7 +85,7 @@ function add_energy_sold_balance!(prb::Problem)
     Y_C_B = model[:Y_C_B]
 
     @constraint(model, energy_sold_balance_0[b = 1:B], energy_sold[b, 1] == (store_init[b]*S[b,1] - sum(A[1,v,b]*energy_arrived[1][v] for v in 1:vehicles_arrived[1])))
-    @constraint(model, energy_sold_balance[b = 1:B, t = 2:T], energy_sold[b, t] == (Y_C_B[b, t-1] - sum(A[t,v,b]*energy_arrived[t][v] for v in 1:vehicles_arrived[t])))
+    @constraint(model, energy_sold_balance[b = 1:B, t = 2:T], energy_sold[b, t] == (Y_C_B[b, t] - sum(A[t,v,b]*energy_arrived[t][v] for v in 1:vehicles_arrived[t])))
 end
 
 function add_final_storage!(prb::Problem)
@@ -99,7 +97,7 @@ function add_final_storage!(prb::Problem)
     
     energy_storage = model[:energy_storage]
 
-    @constraint(model, final_storage[b = 1:B], energy_storage[b, T] >= rho*store_max ) 
+    @constraint(model, final_storage[b = 1:B], energy_storage[b, end] >= rho*store_max ) 
 end
 
 function add_assignment_con_1!(prb::Problem)

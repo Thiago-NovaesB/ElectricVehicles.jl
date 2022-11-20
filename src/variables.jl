@@ -1,10 +1,3 @@
-# function add_initial_energy_storage!(prb::Problem)
-#     model = prb.model
-#     B = prb.data.B
-
-#     @variable(model, energy_storage_inital[1:B])
-# end
-
 function add_energy_storage!(prb::Problem)
     model = prb.model
     store_max = prb.data.store_max
@@ -12,7 +5,7 @@ function add_energy_storage!(prb::Problem)
     B = prb.data.B
     T = prb.data.T
 
-    @variable(model, store_min <= energy_storage[1:B, 1:T] <= store_max)
+    @variable(model, store_min <= energy_storage[1:B, 1:T+1] <= store_max)
 end
 
 function add_energy_sold_battery!(prb::Problem)
@@ -113,5 +106,5 @@ function add_trick_C_B!(prb::Problem)
     T = prb.data.T
     B = prb.data.B
 
-    @variable(model, Y_C_B[1:B, 1:T-1])
+    @variable(model, Y_C_B[1:B, 1:T])
 end

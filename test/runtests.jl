@@ -30,8 +30,10 @@ data.store_init = [1.0, 1.0]
 data.rho = 0.0
 data.solver = HiGHS.Optimizer
 
+ElectricVehicles.create_model!(prb)
 ElectricVehicles.create_model_relaxed!(prb)
 ElectricVehicles.solve_model!(prb)
+ElectricVehicles.solve_model_fixed!(prb)
 
 value.(prb.model[:K])
 value.(prb.model[:S])

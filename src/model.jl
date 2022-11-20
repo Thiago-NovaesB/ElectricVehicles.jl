@@ -16,6 +16,7 @@ end
 
 function add_constraints!(prb::Problem)
     
+    add_dual_fisher!(prb)
     add_battery_balance!(prb)
     add_linear_Cont_Bin1!(prb)
     add_linear_Cont_Bin2!(prb)
