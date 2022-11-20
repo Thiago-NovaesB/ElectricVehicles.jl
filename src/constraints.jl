@@ -3,8 +3,9 @@ function add_dual_fisher!(prb::Problem)
     data = prb.data
     B = prb.data.B
     energy_storage = model[:energy_storage]
+    store_init = data.store_init_temp
 
-    @constraint(model, dual_fisher[b in 1:B], energy_storage[b,1] == data.store_init[b])
+    @constraint(model, dual_fisher[b in 1:B], energy_storage[b,1] == store_init[b])
 end
 
 function add_battery_balance!(prb::Problem)
@@ -44,7 +45,7 @@ function add_linear_Cont_Bin2!(prb::Problem)
     B = prb.data.B
     T = prb.data.T
     store_max = prb.data.store_max
-    vehicles_arrived = prb.data.vehicles_arrived
+    vehicles_arrived = prb.data.vehicles_arrived_temp
 
     A = model[:A]
     energy_sold_vehicle = model[:energy_sold_vehicle]
@@ -60,9 +61,9 @@ function add_bound_energy_sold!(prb::Problem)
     model = prb.model
     B = prb.data.B
     T = prb.data.T
-    max_arrived = prb.data.max_arrived
-    min_arrived = prb.data.min_arrived
-    vehicles_arrived = prb.data.vehicles_arrived
+    max_arrived = prb.data.max_arrived_temp
+    min_arrived = prb.data.min_arrived_temp
+    vehicles_arrived = prb.data.vehicles_arrived_temp
 
     A = model[:A]
     energy_sold_vehicle = model[:energy_sold_vehicle]
@@ -75,9 +76,9 @@ function add_energy_sold_balance!(prb::Problem)
     model = prb.model
     B = prb.data.B
     T = prb.data.T
-    store_init = prb.data.store_init
-    energy_arrived = prb.data.energy_arrived
-    vehicles_arrived = prb.data.vehicles_arrived
+    store_init = prb.data.store_init_temp
+    energy_arrived = prb.data.energy_arrived_temp
+    vehicles_arrived = prb.data.vehicles_arrived_temp
 
     energy_sold = model[:energy_sold]
     S = model[:S]
@@ -104,7 +105,7 @@ function add_assignment_con_1!(prb::Problem)
     model = prb.model
     B = prb.data.B
     T = prb.data.T
-    vehicles_arrived = prb.data.vehicles_arrived
+    vehicles_arrived = prb.data.vehicles_arrived_temp
     A = model[:A]
     S = model[:S]
 
@@ -115,7 +116,7 @@ function add_assignment_con_2!(prb::Problem)
     model = prb.model
     B = prb.data.B
     T = prb.data.T
-    vehicles_arrived = prb.data.vehicles_arrived
+    vehicles_arrived = prb.data.vehicles_arrived_temp
     A = model[:A]
 
     @constraint(model, con_2[t = 1:T, v = 1:vehicles_arrived[t]], sum(A[t,v,b] for b in 1:B) <= 1) #TODO
@@ -136,7 +137,7 @@ function add_swap_battery!(prb::Problem)
     model = prb.model
     T = prb.data.T
     N_s = prb.data.N_s
-    vehicles_arrived = prb.data.vehicles_arrived
+    vehicles_arrived = prb.data.vehicles_arrived_temp
 
     S = model[:S]
 

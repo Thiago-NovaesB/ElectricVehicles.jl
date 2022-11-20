@@ -21,7 +21,7 @@ end
 function add_energy_sold_vehicle!(prb::Problem)
     model = prb.model
     store_max = prb.data.store_max
-    vehicles_arrived = prb.data.vehicles_arrived
+    vehicles_arrived = prb.data.vehicles_arrived_temp
     B = prb.data.B
     T = prb.data.T
 
@@ -89,7 +89,7 @@ end
 
 function add_assignment!(prb::Problem)
     model = prb.model
-    vehicles_arrived = prb.data.vehicles_arrived
+    vehicles_arrived = prb.data.vehicles_arrived_temp
     relaxed = prb.data.relaxed
     T = prb.data.T
     B = prb.data.B

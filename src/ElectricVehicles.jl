@@ -1,5 +1,6 @@
 module ElectricVehicles
 
+    using Statistics
     using JuMP
     using HiGHS
     using JSON
