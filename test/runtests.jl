@@ -28,8 +28,13 @@ data.min_arrived = [[0, 0], [1], [1]]
 data.vehicles_arrived = [2,1,1]
 data.store_init = [1.0, 1.0]
 data.rho = 0.0
-
 data.solver = HiGHS.Optimizer
 
-ElectricVehicles.create_model!(prb)
+ElectricVehicles.create_model_relaxed!(prb)
 ElectricVehicles.solve_model!(prb)
+
+value.(prb.model[:K])
+value.(prb.model[:S])
+value.(prb.model[:A])
+value.(prb.model[:energy_storage])
+

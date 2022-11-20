@@ -1,3 +1,12 @@
+# function add_dual_fisher!(prb::Problem)
+#     model = prb.model
+#     data = prb.data
+#     B = prb.data.B
+#     energy_storage_inital = model[:energy_storage_inital]
+
+#     @constraint(model, dual_fisher[b in 1:B], energy_storage_inital[b] == data.store_init[b])
+# end
+
 function add_battery_balance!(prb::Problem)
     model = prb.model
     B = prb.data.B

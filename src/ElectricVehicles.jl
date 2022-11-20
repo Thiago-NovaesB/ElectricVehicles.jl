@@ -15,6 +15,7 @@ module ElectricVehicles
     include("constraints.jl")
     include("objective.jl")
     include("model.jl")
+    include("interface.jl")
 
     export get_cars_electric_demand
 

@@ -37,8 +37,6 @@ function get_cars_electric_demand(filename::String, mean::Bool=true)
         all_hours = Dates.format.(all_hours, "dd-mm-yyyy HH")
         df_all_hours = DataFrame(Time = all_hours)
         df_new = DataFrame(Time = all_hours, Arrivals_full = 0)
-        
-        
 
         df = sort(leftjoin(df_all_hours, df_arrivals_hourly , on = :Time => :Time))
         df_new[.!ismissing.(df.Arrivals), :Arrivals_full]  = df[.!ismissing.(df.Arrivals), :Arrivals]

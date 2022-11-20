@@ -1,3 +1,10 @@
+# function add_initial_energy_storage!(prb::Problem)
+#     model = prb.model
+#     B = prb.data.B
+
+#     @variable(model, energy_storage_inital[1:B])
+# end
+
 function add_energy_storage!(prb::Problem)
     model = prb.model
     store_max = prb.data.store_max
@@ -37,18 +44,28 @@ end
 
 function add_charging_battery!(prb::Problem)
     model = prb.model
+    relaxed = prb.data.relaxed
     B = prb.data.B
     T = prb.data.T
 
-    @variable(model, K[1:B, 1:T], Bin)
+    if relaxed
+        @variable(model, 0 <= K[1:B, 1:T] <= 1)
+    else
+        @variable(model, K[1:B, 1:T], Bin)
+    end
 end
 
 function add_swapping_battery!(prb::Problem)
     model = prb.model
+    relaxed = prb.data.relaxed
     B = prb.data.B
     T = prb.data.T
 
-    @variable(model, S[1:B, 1:T], Bin)
+    if relaxed
+        @variable(model, 0 <= S[1:B, 1:T] <= 1)
+    else
+        @variable(model, S[1:B, 1:T], Bin)
+    end
 end
 
 function add_energy_charger!(prb::Problem)
@@ -80,9 +97,15 @@ end
 function add_assignment!(prb::Problem)
     model = prb.model
     vehicles_arrived = prb.data.vehicles_arrived
+    relaxed = prb.data.relaxed
     T = prb.data.T
     B = prb.data.B
-    @variable(model, A[t in 1:T, 1:vehicles_arrived[t], 1:B], Bin)
+    
+    if relaxed
+        @variable(model, 0 <= A[t in 1:T, 1:vehicles_arrived[t], 1:B] <= 1)
+    else
+        @variable(model, A[t in 1:T, 1:vehicles_arrived[t], 1:B], Bin)
+    end
 end
 
 function add_trick_C_B!(prb::Problem)

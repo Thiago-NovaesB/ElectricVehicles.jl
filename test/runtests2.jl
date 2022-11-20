@@ -32,23 +32,20 @@ data.D = 1.0
 data.energy_arrived = df_lengths_cars.EQ
 data.vehicles_arrived = lengths_cars
 data.store_init = ones(data.B)*Max_Baterry_Cap
-data.swap_min = 0.7
 data.energy_arrived = rand.(lengths_cars).*Max_Baterry_Cap/2
 data.max_arrived = ones.(lengths_cars)*Max_Baterry_Cap
 data.min_arrived = data.energy_arrived.+df_lengths_cars.EQ
 data.min_arrived = [Float64[min(y,Max_Baterry_Cap) for y in x] for x in data.min_arrived]
 data.rho = 0.0
 
-# data.solver = HiGHS.Optimizer
-data.solver = Gurobi.Optimizer
+data.solver = HiGHS.Optimizer
+# data.solver = Gurobi.Optimizer
 
 ElectricVehicles.create_model!(prb)
 ElectricVehicles.solve_model!(prb)
 
-value.(prb.model[:Y_C_B])
-value.(prb.model[:energy_storage])
-value.(prb.model[:energy_sold])
+value.(prb.model[:K])
+value.(prb.model[:S])
+value.(prb.model[:A])
 
-
-value.(prb.model[:Y_B_B])
 

@@ -1,11 +1,3 @@
-function create_model!(prb::Problem)
-    prb.model = Model(prb.data.solver)
-
-    add_variables!(prb)
-    add_constraints!(prb)
-    add_objective!(prb)
-end
-
 function add_variables!(prb::Problem)
     
     add_energy_storage!(prb)
@@ -46,9 +38,4 @@ function add_objective!(prb::Problem)
     
     add_max_profit!(prb)
     nothing
-end
-
-function solve_model!(prb::Problem)
-    
-    optimize!(prb.model)
 end

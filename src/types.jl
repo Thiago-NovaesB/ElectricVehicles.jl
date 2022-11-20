@@ -4,6 +4,7 @@
     N_s::Int64
     N_k::Int64
 
+    relaxed::Bool
     store_max::Float64
     store_min::Float64
 
