@@ -7,7 +7,7 @@ prb = ElectricVehicles.Problem()
 data = prb.data
 
 filename = "test/data/acndata_sessions.json"
-df_lengths_cars = get_cars_electric_demand(filename)
+df_lengths_cars = ElectricVehicles.get_cars_electric_demand(filename)
 lengths_cars = Int64.(df_lengths_cars.Count)
 # 100 solar panels (KWh)
 solar_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.39408, 17.11094, 21.53498, 22.33154, 20.40962, 14.99074, 7.6846, 0.92978, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]

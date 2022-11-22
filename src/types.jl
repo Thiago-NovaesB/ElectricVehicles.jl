@@ -19,7 +19,7 @@
     con_efficiency::Float64
     charger_efficiency::Float64
     pv_generation::Vector{Float64}
-    pv_generation_distribution::Array = []
+    pv_generation_distribution::Matrix{Float64}
     D::Float64
     
     energy_arrived::Vector{Vector{Float64}}
@@ -39,19 +39,8 @@
     solver::Union{DataType,Nothing} = nothing
 end
 
-@kwdef mutable struct Cache
-
-end
-
-@kwdef mutable struct Output
-
-end
-
-
 @kwdef mutable struct Problem
     data::Data
-    cache::Cache
-    output::Output
     model::JuMP.Model
 end
 

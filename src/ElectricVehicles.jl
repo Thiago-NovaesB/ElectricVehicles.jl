@@ -17,7 +17,6 @@ module ElectricVehicles
     include("objective.jl")
     include("model.jl")
     include("interface.jl")
-
-    export get_cars_electric_demand
+    include("sddp.jl")
 
 end # module ElectricVehicles

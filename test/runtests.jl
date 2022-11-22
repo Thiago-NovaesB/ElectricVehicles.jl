@@ -21,7 +21,7 @@ data.pv_price = 0.0
 data.con_efficiency = 0.95
 data.charger_efficiency = 0.99
 data.pv_generation = ones(3)
-data.pv_generation_distribution = [[[0.6, 1.0]], [[1.0, 1.0], [1.0, 1.0]], [[1.0, 1.0], [1.0, 1.0], [1.0, 1.0], [1.0, 1.0]]]
+data.pv_generation_distribution = [0.6 1.0; 0.6 1.0; 0.6 1.0]
 
 data.D = 1.0
 data.energy_arrived = [[0.5, 0.5], [0.5], [0.5]]
@@ -32,7 +32,7 @@ data.store_init = [1.0, 1.0]
 data.rho = 0.0
 data.solver = HiGHS.Optimizer
 
-ElectricVehicles.sddp_rb(prb, maxiter = 10)
+ElectricVehicles.sddp(prb, maxiter = 10)
 
 ElectricVehicles.create_model!(prb)
 ElectricVehicles.create_model!(prb, true)
