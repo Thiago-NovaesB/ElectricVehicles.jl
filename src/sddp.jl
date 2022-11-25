@@ -1,10 +1,10 @@
-function sddp(prb::Problem; maxiter = 10)
+function sddp(prb::Problem; maxiter = 10, UB = 50)
     iter = 1
     data = prb.data
     options = prb.options
     data.T = 1
     stages, _ = size(data.pv_generation_distribution)
-    FCFs = FCF[FCF(Cut[Cut(zeros(3)...)],t) for t = 1:stages]
+    FCFs = FCF[FCF(Cut[Cut(zeros(data.B), UB, zeros(data.B))],t) for t = 1:stages]
     
     LB = 0
     UB = 0
@@ -15,8 +15,11 @@ function sddp(prb::Problem; maxiter = 10)
 
             LB = update_lb(prb, FCFs)
             UB = update_ub(prb, FCFs)
-            iter += 1
         end
+        if LB ≈ UB
+            return LB, UB
+        end
+        iter += 1
     end
     return LB, UB
 end
@@ -41,6 +44,7 @@ function update_ub(prb::Problem, FCFs::Vector{FCF})
         _create_sub_model!(prb, initial_storage, FCFs[1], solar)
         solve_model!(prb, false)
         model = prb.model
+        JuMP.write_to_file(model, "test.lp")
         E_UB += objective_value(model)/options.simul_ub_number
     end
     return E_UB

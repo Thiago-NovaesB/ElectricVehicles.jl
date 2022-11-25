@@ -50,7 +50,6 @@ end
 function _create_sub_model!(prb::Problem, initial_storage::Vector{Float64}, FCF::FCF, solar::Float64)
     prb.model = Model(prb.options.solver)
     set_silent(prb.model)
-    # prb.data.relaxed = false
     prb.data.stage = FCF.stage
     prb.data.pv_generation = [solar]
     prb.data.store_init_temp = initial_storage
@@ -66,11 +65,11 @@ function apply_cuts!(prb::Problem, FCF::FCF)
     model= prb.model
 
     x = model[:energy_storage]
-    model[:omega_t] = omega_t = @variable(model, base_name = "omega_"*string(FCF.stage), lower_bound = 0.0)
+    model[:omega_t] = omega_t = @variable(model, base_name = "omega_"*string(FCF.stage))
     for cut in FCF.cuts
-        @constraint(model, omega_t >= sum(cut.π .* (x .- cut.x)) + cut.Q)
+        @constraint(model, omega_t <= sum(cut.π .* (x .- cut.x)) + cut.Q)
     end
     objective = objective_function(model)
-    objective -= omega_t
+    objective += omega_t
     set_objective_function(model, objective)
 end
