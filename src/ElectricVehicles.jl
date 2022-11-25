@@ -8,6 +8,7 @@ module ElectricVehicles
     using DataFrames
     using Query
     using Plots
+    using SDDP
 
     include("get_data.jl")
     include("utils.jl")
@@ -18,5 +19,6 @@ module ElectricVehicles
     include("model.jl")
     include("interface.jl")
     include("sddp.jl")
+    include("sddip.jl")
 
 end # module ElectricVehicles

@@ -85,17 +85,14 @@ function add_energy_sold_balance!(prb::Problem)
     A = model[:A]
     Y_C_B = model[:Y_C_B]
 
-    @constraint(model, energy_sold_balance_0[b = 1:B], energy_sold[b, 1] == (store_init[b]*S[b,1] - sum(A[1,v,b]*energy_arrived[1][v] for v in 1:vehicles_arrived[1])))
-    @constraint(model, energy_sold_balance[b = 1:B, t = 2:T], energy_sold[b, t] == (Y_C_B[b, t] - sum(A[t,v,b]*energy_arrived[t][v] for v in 1:vehicles_arrived[t])))
+    @constraint(model, energy_sold_balance[b = 1:B, t = 1:T], energy_sold[b, t] == (Y_C_B[b, t] - sum(A[t,v,b]*energy_arrived[t][v] for v in 1:vehicles_arrived[t])))
 end
 
 function add_final_storage!(prb::Problem)
     model = prb.model
     B = prb.data.B
-    T = prb.data.T
     store_max = prb.data.store_max
     rho = prb.data.rho
-    
     energy_storage = model[:energy_storage]
 
     @constraint(model, final_storage[b = 1:B], energy_storage[b, end] >= rho*store_max ) 

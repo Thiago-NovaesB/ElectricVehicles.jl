@@ -1,6 +1,7 @@
 using ElectricVehicles
 using HiGHS
 using JuMP
+using SDDP
 
 prb = ElectricVehicles.Problem()
 data = prb.data
@@ -44,3 +45,5 @@ value.(prb.model[:S])
 value.(prb.model[:A])
 value.(prb.model[:energy_storage])
 
+
+model = ElectricVehicles.create_sddip(prb)
