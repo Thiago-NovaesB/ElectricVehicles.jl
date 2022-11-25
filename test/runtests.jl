@@ -65,7 +65,7 @@ model = ElectricVehicles.create_sddip(prb)
 model = ElectricVehicles.solve_sddip(model)
 ##########################################
 prb = create_data()
-ElectricVehicles.sddp(prb, maxiter = 100)
+ElectricVehicles.sddp(prb, maxiter = 1)
 
 
 value.(prb.model[:S])

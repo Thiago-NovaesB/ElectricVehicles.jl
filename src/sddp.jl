@@ -1,10 +1,10 @@
-function sddp(prb::Problem; maxiter = 10, UB = 50)
+function sddp(prb::Problem; maxiter = 10, ub = 50)
     iter = 1
     data = prb.data
     options = prb.options
     data.T = 1
     stages, _ = size(data.pv_generation_distribution)
-    FCFs = FCF[FCF(Cut[Cut(zeros(data.B), UB, zeros(data.B))],t) for t = 1:stages]
+    FCFs = FCF[FCF(Cut[Cut(zeros(data.B), ub, zeros(data.B))],t) for t = 1:stages]
     
     LB = 0
     UB = 0
@@ -44,7 +44,6 @@ function update_ub(prb::Problem, FCFs::Vector{FCF})
         _create_sub_model!(prb, initial_storage, FCFs[1], solar)
         solve_model!(prb, false)
         model = prb.model
-        JuMP.write_to_file(model, "test.lp")
         E_UB += objective_value(model)/options.simul_ub_number
     end
     return E_UB
@@ -83,7 +82,7 @@ function backward(prb::Problem, FCFs::Vector{FCF}, storages)
         for _ in 1:options.backward_number
             solar = rand(data.pv_generation_distribution[t,:])
             _create_sub_model!(prb, initial_storage, FCFs[t], solar)
-            solve_model!(prb, false)
+            solve_model!(prb, true)
             model = prb.model
             pi += dual.(model[:dual_fisher])/options.backward_number
             Q += objective_value(model)/options.backward_number
@@ -93,4 +92,17 @@ function backward(prb::Problem, FCFs::Vector{FCF}, storages)
     end
     
     return FCFs
+end
+
+function apply_cuts!(prb::Problem, FCF::FCF)
+    model= prb.model
+
+    x = model[:energy_storage]
+    model[:omega_t] = omega_t = @variable(model, base_name = "omega_"*string(FCF.stage))
+    for cut in FCF.cuts
+        @constraint(model, omega_t <= sum(cut.π .* (x .- cut.x)) + cut.Q)
+    end
+    objective = objective_function(model)
+    objective += omega_t
+    set_objective_function(model, objective)
 end

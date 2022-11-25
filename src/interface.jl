@@ -60,16 +60,3 @@ function _create_sub_model!(prb::Problem, initial_storage::Vector{Float64}, FCF:
     add_objective!(prb)
     apply_cuts!(prb, FCF)
 end
-
-function apply_cuts!(prb::Problem, FCF::FCF)
-    model= prb.model
-
-    x = model[:energy_storage]
-    model[:omega_t] = omega_t = @variable(model, base_name = "omega_"*string(FCF.stage))
-    for cut in FCF.cuts
-        @constraint(model, omega_t <= sum(cut.π .* (x .- cut.x)) + cut.Q)
-    end
-    objective = objective_function(model)
-    objective += omega_t
-    set_objective_function(model, objective)
-end

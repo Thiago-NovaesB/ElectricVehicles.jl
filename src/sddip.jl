@@ -1,4 +1,4 @@
-function create_sddip(prb::Problem)
+function create_sddip(prb::Problem, ub = 50)
 
     data = prb.data
     options = prb.options
@@ -6,7 +6,7 @@ function create_sddip(prb::Problem)
     model = SDDP.LinearPolicyGraph(
         stages = data.T,
         sense = :Max,
-        upper_bound = 10000000.0,
+        upper_bound = ub,
         optimizer = options.solver,
     ) do subproblem, node
         
@@ -72,10 +72,10 @@ function create_sddip(prb::Problem)
     return model
 end 
 
-function solve_sddip(model)
+function solve_sddip(model, iteration_limit = 10)
     SDDP.train(
         model;
-        iteration_limit = 100,
+        iteration_limit = iteration_limit,
         duality_handler = SDDP.ContinuousConicDuality(),
     )
     return model
