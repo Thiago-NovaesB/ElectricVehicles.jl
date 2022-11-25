@@ -1,12 +1,13 @@
 function create_sddip(prb::Problem)
 
     data = prb.data
+    options = prb.options
 
     model = SDDP.LinearPolicyGraph(
         stages = data.T,
         sense = :Max,
         upper_bound = 10000000.0,
-        optimizer = data.solver,
+        optimizer = options.solver,
     ) do subproblem, node
         
         # #state variables

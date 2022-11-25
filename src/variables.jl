@@ -37,7 +37,7 @@ end
 
 function add_charging_battery!(prb::Problem)
     model = prb.model
-    relaxed = prb.data.relaxed
+    relaxed = prb.options.relaxed
     B = prb.data.B
     T = prb.data.T
 
@@ -50,7 +50,7 @@ end
 
 function add_swapping_battery!(prb::Problem)
     model = prb.model
-    relaxed = prb.data.relaxed
+    relaxed = prb.options.relaxed
     B = prb.data.B
     T = prb.data.T
 
@@ -90,7 +90,7 @@ end
 function add_assignment!(prb::Problem)
     model = prb.model
     vehicles_arrived = prb.data.vehicles_arrived_temp
-    relaxed = prb.data.relaxed
+    relaxed = prb.options.relaxed
     T = prb.data.T
     B = prb.data.B
     

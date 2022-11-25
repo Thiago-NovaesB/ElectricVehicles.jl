@@ -38,8 +38,8 @@ data.min_arrived = data.energy_arrived.+df_lengths_cars.EQ
 data.min_arrived = [Float64[min(y,Max_Baterry_Cap) for y in x] for x in data.min_arrived]
 data.rho = 0.0
 
-data.solver = HiGHS.Optimizer
-# data.solver = Gurobi.Optimizer
+options.solver = HiGHS.Optimizer
+# options.solver = Gurobi.Optimizer
 
 ElectricVehicles.create_model!(prb)
 ElectricVehicles.solve_model!(prb)

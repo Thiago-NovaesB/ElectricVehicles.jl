@@ -5,6 +5,7 @@ using SDDP
 
 prb = ElectricVehicles.Problem()
 data = prb.data
+options = prb.options
 
 data.B = 2
 data.T = 3 
@@ -31,19 +32,30 @@ data.min_arrived = [[0, 0], [1], [1]]
 data.vehicles_arrived = [2,1,1]
 data.store_init = [1.0, 1.0]
 data.rho = 0.0
-data.solver = HiGHS.Optimizer
 
-ElectricVehicles.sddp(prb, maxiter = 10)
+options.solver = HiGHS.Optimizer
+options.forward_number = 1
+options.backward_number = 2
+options.simul_ub_number = 1
+options.simul_lb_number = 1
 
+
+##########################################
 ElectricVehicles.create_model!(prb)
+ElectricVehicles.solve_model!(prb)
+objective_value(prb.model)
+##########################################
+ElectricVehicles.create_model!(prb)
+ElectricVehicles.solve_model!(prb, true)
+objective_value(prb.model)
+##########################################
 ElectricVehicles.create_model!(prb, true)
 ElectricVehicles.solve_model!(prb)
-ElectricVehicles.solve_model!(prb, true)
-
-value.(prb.model[:K])
-value.(prb.model[:S])
-value.(prb.model[:A])
-value.(prb.model[:energy_storage])
-
-
+objective_value(prb.model)
+##########################################
 model = ElectricVehicles.create_sddip(prb)
+model = ElectricVehicles.solve_sddip(model)
+##########################################
+ElectricVehicles.sddp(prb, maxiter = 10)
+
+

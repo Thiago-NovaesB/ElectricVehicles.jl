@@ -1,7 +1,7 @@
 function create_model!(prb::Problem, relaxed::Bool = false)
-    prb.model = Model(prb.data.solver)
+    prb.model = Model(prb.options.solver)
     set_silent(prb.model)
-    prb.data.relaxed = relaxed
+    prb.options.relaxed = relaxed
     choose_stage!(prb::Problem)
     add_variables!(prb)
     add_constraints!(prb)
@@ -48,7 +48,7 @@ function choose_stage!(prb::Problem)
 end
 
 function _create_sub_model!(prb::Problem, initial_storage::Vector{Float64}, FCF::FCF, solar::Float64)
-    prb.model = Model(prb.data.solver)
+    prb.model = Model(prb.options.solver)
     set_silent(prb.model)
     # prb.data.relaxed = false
     prb.data.stage = FCF.stage

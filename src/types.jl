@@ -5,7 +5,6 @@
     N_k::Int64
     stage::Int
 
-    relaxed::Bool
     store_max::Float64
     store_min::Float64
 
@@ -36,11 +35,20 @@
     store_init_temp::Vector{Float64}
     rho::Float64
 
+end
+
+@kwdef mutable struct Options
+    relaxed::Bool
     solver::Union{DataType,Nothing} = nothing
+    forward_number::Int
+    backward_number::Int
+    simul_ub_number::Int
+    simul_lb_number::Int
 end
 
 @kwdef mutable struct Problem
     data::Data
+    options::Options
     model::JuMP.Model
 end
 
