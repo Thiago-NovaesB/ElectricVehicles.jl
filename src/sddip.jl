@@ -76,7 +76,7 @@ function solve_sddip(model, iteration_limit = 10)
     SDDP.train(
         model;
         iteration_limit = iteration_limit,
-        duality_handler = SDDP.ContinuousConicDuality(),
+        duality_handler = SDDP.LagrangianDuality(),
     )
     return model
 end

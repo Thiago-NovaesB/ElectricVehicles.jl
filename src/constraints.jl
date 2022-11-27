@@ -76,12 +76,10 @@ function add_energy_sold_balance!(prb::Problem)
     model = prb.model
     B = prb.data.B
     T = prb.data.T
-    store_init = prb.data.store_init_temp
     energy_arrived = prb.data.energy_arrived_temp
     vehicles_arrived = prb.data.vehicles_arrived_temp
 
     energy_sold = model[:energy_sold]
-    S = model[:S]
     A = model[:A]
     Y_C_B = model[:Y_C_B]
 
