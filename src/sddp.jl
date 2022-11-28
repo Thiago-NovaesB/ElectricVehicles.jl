@@ -82,7 +82,7 @@ function backward(prb::Problem, FCFs::Vector{FCF}, storages)
         for _ in 1:options.backward_number
             solar = rand(data.pv_generation_distribution[t,:])
             _create_sub_model!(prb, initial_storage, FCFs[t], solar)
-            solve_model!(prb, true)
+            solve_model!(prb, false)
             model = prb.model
             pi += dual.(model[:dual_fisher])/options.backward_number
             Q += objective_value(model)/options.backward_number

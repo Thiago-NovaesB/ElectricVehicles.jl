@@ -55,6 +55,7 @@ function _create_sub_model!(prb::Problem, initial_storage::Vector{Float64}, FCF:
     prb.data.store_init_temp = initial_storage
 
     choose_stage!(prb::Problem)
+    prb.options.relaxed = true
     add_variables!(prb)
     add_constraints!(prb)
     add_objective!(prb)
